@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Deutschweg — German Roadmap</title>
+<style>
+  :root{
+    --ink:#1C2333;
+    --navy:#16233E;
+    --navy-2:#1F3157;
+    --parchment:#F1EEE3;
+    --parchment-2:#E7E1D0;
+    --card:#FBFAF5;
+    --gold:#B8863E;
+    --gold-soft:#DCC292;
+    --brick:#8C4A3A;
+    --sage:#5B6F55;
+    --line: rgba(28,35,51,0.14);
+    --line-soft: rgba(28,35,51,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+  }
+  h1,h2,h3,.serif{
+    font-family:Georgia,"Iowan Old Style","Times New Roman",serif;
+  }
+  .app{
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ---------- Spine nav ---------- */
+  .spine{
+    width:236px;
+    flex-shrink:0;
+    background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#F3F0E6;
+    padding:28px 20px 20px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .spine-title{
+    font-size:22px;
+    letter-spacing:0.3px;
+    margin:0 0 2px;
+  }
+  .spine-sub{
+    font-size:12.5px;
+    color:var(--gold-soft);
+    margin:0 0 28px;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:3px;
+    cursor:pointer;
+    color:#D9D5C4;
+    font-size:14px;
+    margin-bottom:4px;
+    border-left:2px solid transparent;
+    transition:background .15s, border-color .15s;
+  }
+  .nav-item:hover{ background:rgba(255,255,255,0.06); }
+  .nav-item.active{
+    background:rgba(255,255,255,0.09);
+    border-left:2px solid var(--gold);
+    color:#fff;
+  }
+  .nav-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--gold-soft);
+    flex-shrink:0;
+  }
+  .spine-foot{
+    margin-top:32px;
+    padding-top:16px;
+    border-top:1px solid rgba(255,255,255,0.12);
+    font-size:11.5px;
+    color:rgba(255,255,255,0.4);
+  }
+
+  /* ---------- Main ---------- */
+  .main{
+    flex:1;
+    padding:40px 48px 80px;
+    max-width:920px;
+  }
+  .page-head{
+    margin-bottom:32px;
+  }
+  .page-head h1{
+    font-size:30px;
+    margin:0 0 6px;
+  }
+  .page-head p{
+    color:#5B5646;
+    margin:0;
+    max-width:60ch;
+  }
+
+  /* ---------- Dashboard hero ---------- */
+  .hero{
+    display:flex;
+    gap:36px;
+    align-items:center;
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:28px 32px;
+    margin-bottom:28px;
+  }
+  .dial{
+    width:132px;height:132px;border-radius:50%;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .dial-inner{
+    width:100px;height:100px;border-radius:50%;
+    background:var(--parchment);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .dial-inner .pct{font-size:24px;font-weight:600;font-family:Georgia,serif;}
+  .dial-inner .lbl{font-size:10.5px;color:#7A7460;letter-spacing:0.4px;}
+  .hero-text h2{margin:0 0 6px;font-size:20px;}
+  .hero-text p{margin:0 0 12px;color:#5B5646;}
+  .hero-stats{display:flex;gap:22px;}
+  .hero-stat b{display:block;font-size:18px;font-family:Georgia,serif;}
+  .hero-stat span{font-size:11.5px;color:#7A7460;}
+
+  .next-up{
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:3px solid var(--brick);
+    padding:18px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:28px;
+    gap:16px;
+  }
+  .next-up .label{font-size:11.5px;color:var(--brick);letter-spacing:0.3px;margin-bottom:4px;}
+  .next-up .task{font-size:16px;}
+  .next-up .where{font-size:12.5px;color:#7A7460;margin-top:2px;}
+  .btn{
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:9px 16px;
+    font-size:13.5px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .btn:hover{background:var(--navy-2);}
+  .btn.secondary{
+    background:transparent;
+    color:var(--navy);
+    border:1px solid var(--line);
+  }
+  .btn.secondary:hover{background:var(--parchment-2);}
+
+  /* phase progress bars */
+  .phase-bars{
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:22px 26px;
+    margin-bottom:28px;
+  }
+  .phase-bars h3{margin:0 0 16px;font-size:15px;}
+  .pbar-row{margin-bottom:14px;}
+  .pbar-row:last-child{margin-bottom:0;}
+  .pbar-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+  .pbar-top b{font-weight:600;}
+  .pbar-top span{color:#7A7460;}
+  .pbar-track{height:7px;background:var(--parchment-2);position:relative;}
+  .pbar-fill{height:100%;background:var(--gold);}
+
+  /* ---------- Roadmap ---------- */
+  .phase-block{margin-bottom:6px;}
+  .phase-head{
+    display:flex;align-items:center;gap:12px;
+    padding:16px 4px;
+    border-top:1px solid var(--line);
+    cursor:pointer;
+  }
+  .phase-head:first-child{border-top:none;}
+  .phase-tag{
+    font-family:Georgia,serif;
+    font-size:15px;font-weight:700;
+    color:var(--navy);
+    width:38px;flex-shrink:0;
+  }
+  .phase-head h3{margin:0;font-size:16px;flex:1;}
+  .phase-head .months{font-size:12px;color:#7A7460;}
+  .phase-head .caret{color:#B0A98F;font-size:13px;transition:transform .15s;}
+  .phase-head.open .caret{transform:rotate(90deg);}
+  .phase-progress-mini{
+    font-size:12px;color:var(--gold);font-family:Georgia,serif;
+  }
+  .weeks-wrap{display:none;padding:0 0 12px 50px;}
+  .weeks-wrap.open{display:block;}
+  .week-row{
+    border-bottom:1px dashed var(--line);
+    padding:12px 0;
+  }
+  .week-row:last-child{border-bottom:none;}
+  .week-head{
+    display:flex;align-items:baseline;gap:8px;
+    cursor:pointer;
+    margin-bottom:2px;
+  }
+  .week-head .wk-num{font-size:13px;color:var(--brick);font-weight:600;}
+  .week-head .wk-title{font-size:14.5px;}
+  .week-head .wk-count{margin-left:auto;font-size:11.5px;color:#9A947C;}
+  .items{display:none;margin-top:8px;padding-left:4px;}
+  .items.open{display:block;}
+  .item{
+    display:flex;align-items:flex-start;gap:9px;
+    padding:5px 0;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .item input{margin-top:3px;accent-color:var(--gold);cursor:pointer;}
+  .item.done{color:#9A947C;text-decoration:line-through;}
+
+  /* ---------- Vocab ---------- */
+  .vocab-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;
+    margin-bottom:28px;
+  }
+  .vcard{
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:16px 18px;
+  }
+  .vcard .word{font-family:Georgia,serif;font-size:17px;}
+  .vcard .plural{font-size:12px;color:var(--sage);margin-top:2px;}
+  .vcard .ex{font-size:13px;color:#5B5646;margin-top:8px;font-style:italic;}
+  .section-title{font-size:14px;letter-spacing:0.2px;color:var(--navy);margin:28px 0 12px;font-weight:600;}
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{
+    background:var(--parchment-2);
+    border:1px solid var(--line);
+    padding:5px 10px;
+    font-size:13px;
+  }
+  .add-form{
+    display:flex;gap:8px;flex-wrap:wrap;
+    background:var(--card);border:1px solid var(--line);
+    padding:16px;margin-bottom:20px;
+  }
+  .add-form input{
+    border:1px solid var(--line);
+    padding:8px 10px;font-size:13.5px;
+    font-family:inherit;
+    flex:1;min-width:120px;
+  }
+
+  /* ---------- Schedule ---------- */
+  table{width:100%;border-collapse:collapse;margin-bottom:8px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line-soft);font-size:14px;}
+  th{color:#7A7460;font-weight:600;font-size:12.5px;}
+  .routine-row{
+    display:flex;justify-content:space-between;
+    padding:12px 0;border-bottom:1px solid var(--line-soft);
+  }
+  .routine-row .time{color:var(--gold);font-family:Georgia,serif;width:80px;flex-shrink:0;}
+  .skills-row{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
+  .skill-pill{
+    background:var(--navy);color:#fff;
+    padding:8px 14px;font-size:13.5px;
+    display:flex;gap:8px;align-items:center;
+  }
+
+  /* ---------- Milestones ---------- */
+  .milestone{
+    display:flex;gap:16px;
+    padding-bottom:26px;
+    position:relative;
+    padding-left:4px;
+  }
+  .milestone:before{
+    content:"";position:absolute;left:11px;top:24px;bottom:0;
+    width:1px;background:var(--line);
+  }
+  .milestone:last-child:before{display:none;}
+  .m-dot{
+    width:23px;height:23px;border-radius:50%;
+    border:2px solid var(--gold);
+    background:var(--parchment);
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:var(--gold);
+    z-index:1;
+  }
+  .m-dot.hit{background:var(--gold);color:#fff;}
+  .m-body b{display:block;font-size:13px;color:var(--brick);}
+  .m-body p{margin:4px 0 0;font-size:14.5px;}
+
+  .hidden{display:none;}
+  .loading{padding:40px;color:#9A947C;font-size:14px;}
+  @media(max-width:760px){
+    .app{flex-direction:column;}
+    .spine{width:100%;height:auto;position:relative;}
+    .main{padding:24px;}
+    .vocab-grid{grid-template-columns:1fr;}
+    .hero{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="spine">
+    <h1 class="spine-title">Deutschweg</h1>
+    <p class="spine-sub">A1 → B2 · 12-month plan</p>
+    <div class="nav-item active" data-tab="dashboard"><span class="nav-dot"></span>Dashboard</div>
+    <div class="nav-item" data-tab="roadmap"><span class="nav-dot"></span>Roadmap</div>
+    <div class="nav-item" data-tab="vocab"><span class="nav-dot"></span>Vocabulary</div>
+    <div class="nav-item" data-tab="schedule"><span class="nav-dot"></span>Schedule &amp; routine</div>
+    <div class="nav-item" data-tab="milestones"><span class="nav-dot"></span>Milestones</div>
+    <div class="spine-foot">Target: B2<br>1.5–2 hrs/day · 6 days/week</div>
+  </nav>
+
+  <main class="main" id="main">
+    <div class="loading" id="loading">Loading your progress…</div>
+  </main>
+</div>
+
+<script>
+(function(){
+
+// ---------------- DATA ----------------
+const PHASES = [
+  { id:"a1", tag:"A1", title:"Foundation", months:"Months 1–2", weeks:[
+    {id:"w1", title:"Start German", items:["Alphabet and pronunciation","Greetings and introductions","Numbers 0–100","Countries and languages","sein","Personal pronouns"]},
+    {id:"w2", title:"Build sentences", items:["haben","Regular verbs","Sentence structure","Questions and W-words","der / die / das"]},
+    {id:"w3", title:"Everyday life", items:["Family","School and jobs","Food and drinks","Days, months and time","Daily routines","Accusative"]},
+    {id:"w4", title:"A1 survival", items:["Shopping","Restaurant","Transport and directions","Weather","Appointments","Modal verbs: können, müssen, wollen"]},
+    {id:"w5", title:"Home & possessions", items:["Dative introduction","Possessives: mein/dein/sein/ihr","Rooms and home vocabulary"]},
+    {id:"w6", title:"Hobbies & actions", items:["Separable verbs","Reflexive verbs","Hobbies and free time"]},
+    {id:"w7", title:"Past tense", items:["Perfekt","Common irregular verbs","Talking about yesterday","Weekend and holidays"]},
+    {id:"w8", title:"A1 review", items:["Grammar review","Listening practice","Speaking practice","Writing practice","A1 mock exam"]}
+  ]},
+  { id:"a2", tag:"A2", title:"Everyday German", months:"Months 3–4", weeks:[
+    {id:"w9", title:"Past experiences", items:["Use Perfekt confidently","Irregular verbs","Describe experiences"]},
+    {id:"w10", title:"Describe & compare", items:["Adjectives","Comparisons","Describe people and things"]},
+    {id:"w11", title:"Connect ideas", items:["weil","dass","wenn","Longer sentences"]},
+    {id:"w12", title:"Health", items:["Doctor vocabulary","Pharmacy","Body","Problems and symptoms"]},
+    {id:"w13", title:"Travel", items:["Hotels","Airports","Transportation","Travel situations"]},
+    {id:"w14", title:"Education & work", items:["Jobs","Education","Applications","CV vocabulary"]},
+    {id:"w15", title:"Formal communication", items:["Formal emails","Requests","Complaints","Invitations"]},
+    {id:"w16", title:"A2 review", items:["Grammar","Listening","Speaking","Writing","A2 mock exam"]}
+  ]},
+  { id:"b1", tag:"B1", title:"Independent German", months:"Months 5–7", weeks:[
+    {id:"w17", title:"Complex sentences", items:["Sentence structure","Relative clauses","Connectors"]},
+    {id:"w18", title:"Opinions & arguments", items:["Express opinions","Give arguments","Agree and disagree","Practice: Ich bin der Meinung, dass..."]},
+    {id:"w19", title:"Modern topics", items:["News","Society","Technology","Environment"]},
+    {id:"w20", title:"Reading & summaries", items:["Read longer articles","Find main ideas","Write summaries"]},
+    {id:"w21", title:"Passive & formal German", items:["Passive voice","Formal language"]},
+    {id:"w22", title:"Konjunktiv II", items:["Hypothetical situations","Polite requests","Ich würde gerne..."]},
+    {id:"w23", title:"Career & university", items:["Job interviews","University vocabulary","Career plans","Goals"]},
+    {id:"w24", title:"Presentation", items:["Prepare a 5-minute presentation","Give the presentation entirely in German"]},
+    {id:"w25", title:"Writing", items:["Emails","Essays","Structured arguments"]},
+    {id:"w26", title:"Native listening", items:["Longer conversations","Natural speech","Note-taking"]},
+    {id:"w27", title:"News & podcasts", items:["German news","Podcasts","Interviews"]},
+    {id:"w28", title:"B1 mastery", items:["B1 mock exam","Identify weaknesses","Fix weak areas"]}
+  ]},
+  { id:"b2", tag:"B2", title:"University & professional German", months:"Months 8–11", weeks:[
+    {id:"w29", title:"Advanced connectors", items:["Complex grammar","Advanced linking expressions"]},
+    {id:"w30", title:"Academic German", items:["University vocabulary","Academic expressions"]},
+    {id:"w31", title:"Professional German", items:["Business vocabulary","Workplace communication"]},
+    {id:"w32", title:"Presentations", items:["Formal presentation","Explain ideas clearly"]},
+    {id:"w33", title:"Articles & reports", items:["Newspapers","Editorials","Reports"]},
+    {id:"w34", title:"Debate", items:["Defend both sides","Agree/disagree","Nuanced arguments"]},
+    {id:"w35", title:"Fast listening", items:["Native-speed conversations","Different accents","Note-taking"]},
+    {id:"w36", title:"Essay writing", items:["Write a structured 250–300 word essay"]},
+    {id:"w37", title:"Academic reading", items:["Research texts","Academic vocabulary"]},
+    {id:"w38", title:"Graphs & presentations", items:["Describe statistics","Charts","Trends"]},
+    {id:"w39", title:"Professional writing", items:["Formal emails","Applications","Interviews"]},
+    {id:"w40", title:"Listening intensive", items:["B2 listening exercises","Review errors"]},
+    {id:"w41", title:"Grammar review", items:["Consolidate difficult B2 grammar"]},
+    {id:"w42", title:"Vocabulary review", items:["Review active vocabulary","Learn collocations"]},
+    {id:"w43", title:"Speaking intensive", items:["Extended conversations","Presentation","Debate"]},
+    {id:"w44", title:"Writing intensive", items:["Timed writing","Correction","Rewriting"]}
+  ]},
+  { id:"b2c", tag:"B2+", title:"Exam preparation", months:"Month 12", weeks:[
+    {id:"w45", title:"Mock exams I", items:["Complete full B2 practice tests"]},
+    {id:"w46", title:"Mock exams II", items:["Review mistakes","Repeat weak sections"]},
+    {id:"w47", title:"Weakest skill", items:["Identify your lowest-scoring skill","Focus most study time there"]},
+    {id:"w48", title:"Final preparation", items:["Full review","Exam strategy","Final B2 practice"]}
+  ]}
+];
+
+const MILESTONES = [
+  {month:"Month 1", text:"I can introduce myself in German.", throughWeek:"w4"},
+  {month:"Month 2", text:"I can survive basic situations.", throughWeek:"w8"},
+  {month:"Month 4", text:"I can communicate about everyday life.", throughWeek:"w16"},
+  {month:"Month 7", text:"I can explain opinions and have conversations.", throughWeek:"w28"},
+  {month:"Month 9", text:"I can discuss more complicated topics.", throughWeek:"w36"},
+  {month:"Month 12", text:"I can use German for serious study/work situations.", throughWeek:"w48"}
+];
+
+const STARTER_VOCAB = [
+  {word:"der Apfel", plural:"die Äpfel", ex:"Ich esse einen Apfel."},
+  {word:"sich bewerben um + Akk.", plural:"", ex:"Ich bewerbe mich um einen Studienplatz."},
+  {word:"die Universität", plural:"die Universitäten", ex:"Ich studiere an einer Universität."}
+];
+
+const DE_EDUCATION = ["die Universität","die Hochschule","der Studiengang","der Bachelor","der Master","der Studienplatz","die Bewerbung","die Zulassung","das Semester","die Vorlesung","die Prüfung","das Zeugnis","der Abschluss"];
+const DE_ADMIN = ["der Aufenthaltstitel","die Anmeldung","der Termin","der Antrag","die Behörde","die Versicherung","das Visum"];
+
+const DAILY_ROUTINE = [
+  {time:"30 min", label:"Vocabulary", desc:"Learn ~15 new useful words; nouns with article + plural + example."},
+  {time:"30 min", label:"Grammar", desc:"Study one concept and make 10 original sentences."},
+  {time:"20 min", label:"Listening", desc:"German audio with subtitles first, then without subtitles."},
+  {time:"20 min", label:"Speaking", desc:"Talk aloud about your day, studies, plans, opinions, or a video."},
+  {time:"10–20 min", label:"Writing", desc:"Write a short German diary or summary."}
+];
+
+const WEEKLY_SCHEDULE = [
+  {day:"Monday", focus:"Grammar + vocabulary"},
+  {day:"Tuesday", focus:"Listening + speaking"},
+  {day:"Wednesday", focus:"Grammar + reading"},
+  {day:"Thursday", focus:"Vocabulary + speaking"},
+  {day:"Friday", focus:"Writing + listening"},
+  {day:"Saturday", focus:"Full review + test"},
+  {day:"Sunday", focus:"Rest / fun German: movies, music, YouTube"}
+];
+
+// flat index of all task ids in order, for "next up"
+const ALL_TASKS = [];
+PHASES.forEach(ph => ph.weeks.forEach(wk => wk.items.forEach((txt, i) => {
+  ALL_TASKS.push({id: wk.id+"-"+i, text: txt, weekId: wk.id, weekTitle: wk.title, phaseTag: ph.tag});
+})));
+
+// ---------------- STATE ----------------
+let progress = {};      // {taskId: true}
+let vocab = [];         // [{word,plural,ex}]
+let openPhase = "a1";
+let openWeek = null;
+
+// ---------------- STORAGE ----------------
+async function loadState(){
+  try{
+    const p = await window.storage.get("progress");
+    progress = p ? JSON.parse(p.value) : {};
+  }catch(e){ progress = {}; }
+  try{
+    const v = await window.storage.get("vocab");
+    vocab = v ? JSON.parse(v.value) : [];
+  }catch(e){ vocab = []; }
+}
+async function saveProgress(){
+  try{ await window.storage.set("progress", JSON.stringify(progress)); }
+  catch(e){ console.error("save progress failed", e); }
+}
+async function saveVocab(){
+  try{ await window.storage.set("vocab", JSON.stringify(vocab)); }
+  catch(e){ console.error("save vocab failed", e); }
+}
+
+// ---------------- HELPERS ----------------
+function weekProgress(wk){
+  const done = wk.items.filter((_,i)=>progress[wk.id+"-"+i]).length;
+  return {done, total: wk.items.length};
+}
+function phaseProgress(ph){
+  let done=0, total=0;
+  ph.weeks.forEach(wk=>{ const p=weekProgress(wk); done+=p.done; total+=p.total; });
+  return {done,total};
+}
+function overallProgress(){
+  let done=0,total=0;
+  PHASES.forEach(ph=>{ const p=phaseProgress(ph); done+=p.done; total+=p.total; });
+  return {done,total};
+}
+function nextTask(){
+  return ALL_TASKS.find(t => !progress[t.id]) || null;
+}
+function currentPhase(){
+  const nt = nextTask();
+  if(!nt) return PHASES[PHASES.length-1];
+  return PHASES.find(ph => ph.weeks.some(w=>w.id===nt.weekId)) || PHASES[0];
+}
+function weeksCompleted(){
+  let c=0;
+  PHASES.forEach(ph=>ph.weeks.forEach(wk=>{
+    const p=weekProgress(wk);
+    if(p.total>0 && p.done===p.total) c++;
+  }));
+  return c;
+}
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+// ---------------- RENDER: DASHBOARD ----------------
+function renderDashboard(){
+  const {done,total} = overallProgress();
+  const pct = total? Math.round(done/total*100) : 0;
+  const cp = currentPhase();
+  const nt = nextTask();
+  const wc = weeksCompleted();
+
+  let html = `
+    <div class="page-head">
+      <h1>Dashboard</h1>
+      <p>Your German journey, at a glance — current phase, what's next, and how far you've come.</p>
+    </div>
+    <div class="hero">
+      <div class="dial" style="background:conic-gradient(var(--gold) ${pct*3.6}deg, var(--parchment-2) 0deg)">
+        <div class="dial-inner"><div class="pct">${pct}%</div><div class="lbl">OVERALL</div></div>
+      </div>
+      <div class="hero-text">
+        <h2>Currently in ${cp.tag} — ${esc(cp.title)}</h2>
+        <p>${esc(cp.months)} of your 12-month plan.</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><b>${wc} / 48</b><span>weeks complete</span></div>
+          <div class="hero-stat"><b>${done} / ${total}</b><span>tasks checked</span></div>
+        </div>
+      </div>
+    </div>`;
+
+  if(nt){
+    html += `
+    <div class="next-up">
+      <div>
+        <div class="label">NEXT UP</div>
+        <div class="task">${esc(nt.text)}</div>
+        <div class="where">${nt.phaseTag} · ${esc(nt.weekTitle)}</div>
+      </div>
+      <button class="btn" data-action="complete-next" data-id="${nt.id}">Mark done</button>
+    </div>`;
+  } else {
+    html += `
+    <div class="next-up">
+      <div>
+        <div class="label">ALL DONE</div>
+        <div class="task">Every task in the roadmap is checked off. Time for the real exam.</div>
+      </div>
+    </div>`;
+  }
+
+  html += `<div class="phase-bars"><h3>Progress by level</h3>`;
+  PHASES.forEach(ph=>{
+    const p = phaseProgress(ph);
+    const ppct = p.total? Math.round(p.done/p.total*100):0;
+    html += `
+      <div class="pbar-row">
+        <div class="pbar-top"><b>${ph.tag} — ${esc(ph.title)}</b><span>${p.done}/${p.total}</span></div>
+        <div class="pbar-track"><div class="pbar-fill" style="width:${ppct}%"></div></div>
+      </div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById("main").innerHTML = html;
+  document.querySelector('[data-action="complete-next"]')?.addEventListener("click", async (e)=>{
+    const id = e.target.getAttribute("data-id");
+    progress[id] = true;
+    await saveProgress();
+    renderDashboard();
+  });
+}
+
+// ---------------- RENDER: ROADMAP ----------------
+function renderRoadmap(){
+  let html = `
+    <div class="page-head">
+      <h1>Roadmap</h1>
+      <p>Twelve months, five phases, forty-eight weeks. Check items off as you study them.</p>
+    </div>`;
+
+  PHASES.forEach(ph=>{
+    const p = phaseProgress(ph);
+    const isOpen = openPhase === ph.id;
+    html += `
+    <div class="phase-block">
+      <div class="phase-head ${isOpen?'open':''}" data-phase="${ph.id}">
+        <div class="phase-tag">${ph.tag}</div>
+        <h3>${esc(ph.title)}</h3>
+        <div class="months">${esc(ph.months)}</div>
+        <div class="phase-progress-mini">${p.done}/${p.total}</div>
+        <div class="caret">›</div>
+      </div>
+      <div class="weeks-wrap ${isOpen?'open':''}">`;
+    ph.weeks.forEach((wk, idx)=>{
+      const wp = weekProgress(wk);
+      const wkOpen = openWeek === wk.id;
+      html += `
+        <div class="week-row">
+          <div class="week-head" data-week="${wk.id}">
+            <span class="wk-num">Week ${wk.id.slice(1)}</span>
+            <span class="wk-title">${esc(wk.title)}</span>
+            <span class="wk-count">${wp.done}/${wp.total}</span>
+          </div>
+          <div class="items ${wkOpen?'open':''}" data-items-for="${wk.id}">`;
+      wk.items.forEach((it,i)=>{
+        const tid = wk.id+"-"+i;
+        const checked = !!progress[tid];
+        html += `
+            <label class="item ${checked?'done':''}">
+              <input type="checkbox" data-task="${tid}" ${checked?'checked':''}>
+              <span>${esc(it)}</span>
+            </label>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  document.getElementById("main").innerHTML = html;
+
+  document.querySelectorAll(".phase-head").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const id = el.getAttribute("data-phase");
+      openPhase = (openPhase===id) ? null : id;
+      renderRoadmap();
+    });
+  });
+  document.querySelectorAll(".week-head").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const id = el.getAttribute("data-week");
+      openWeek = (openWeek===id) ? null : id;
+      renderRoadmap();
+    });
+  });
+  document.querySelectorAll('input[data-task]').forEach(cb=>{
+    cb.addEventListener("change", async (e)=>{
+      const id = e.target.getAttribute("data-task");
+      if(e.target.checked) progress[id]=true; else delete progress[id];
+      await saveProgress();
+      renderRoadmap();
+    });
+  });
+}
+
+// ---------------- RENDER: VOCAB ----------------
+function renderVocab(){
+  let html = `
+    <div class="page-head">
+      <h1>Vocabulary</h1>
+      <p>Learn words in context, not as isolated translations — article, plural, and a real sentence.</p>
+    </div>
+    <div class="vocab-grid">`;
+  STARTER_VOCAB.forEach(v=>{
+    html += `<div class="vcard"><div class="word">${esc(v.word)}</div>${v.plural?`<div class="plural">${esc(v.plural)}</div>`:''}<div class="ex">${esc(v.ex)}</div></div>`;
+  });
+  vocab.forEach((v,i)=>{
+    html += `<div class="vcard"><div class="word">${esc(v.word)}</div>${v.plural?`<div class="plural">${esc(v.plural)}</div>`:''}${v.ex?`<div class="ex">${esc(v.ex)}</div>`:''}</div>`;
+  });
+  html += `</div>
+
+    <div class="section-title">Add a word</div>
+    <div class="add-form">
+      <input id="vf-word" placeholder="Word (e.g. der Termin)">
+      <input id="vf-plural" placeholder="Plural (optional)">
+      <input id="vf-ex" placeholder="Example sentence (optional)">
+      <button class="btn" id="vf-add">Add word</button>
+    </div>
+
+    <div class="section-title">Germany-specific vocabulary — Education</div>
+    <div class="tag-cloud">${DE_EDUCATION.map(w=>`<span class="tag">${esc(w)}</span>`).join("")}</div>
+
+    <div class="section-title">Germany-specific vocabulary — Administration</div>
+    <div class="tag-cloud">${DE_ADMIN.map(w=>`<span class="tag">${esc(w)}</span>`).join("")}</div>
+  `;
+  document.getElementById("main").innerHTML = html;
+
+  document.getElementById("vf-add").addEventListener("click", async ()=>{
+    const word = document.getElementById("vf-word").value.trim();
+    if(!word) return;
+    const plural = document.getElementById("vf-plural").value.trim();
+    const ex = document.getElementById("vf-ex").value.trim();
+    vocab.unshift({word,plural,ex});
+    await saveVocab();
+    renderVocab();
+  });
+}
+
+// ---------------- RENDER: SCHEDULE ----------------
+function renderSchedule(){
+  let html = `
+    <div class="page-head">
+      <h1>Schedule &amp; routine</h1>
+      <p>~9–12 hours a week, built from a daily routine and a weekly rhythm.</p>
+    </div>
+    <div class="section-title">Daily study routine</div>`;
+  DAILY_ROUTINE.forEach(r=>{
+    html += `<div class="routine-row"><div class="time">${esc(r.time)}</div><div><b>${esc(r.label)}</b><br><span style="color:#5B5646">${esc(r.desc)}</span></div></div>`;
+  });
+
+  html += `<div class="section-title">Weekly schedule</div><table><thead><tr><th>Day</th><th>Focus</th></tr></thead><tbody>`;
+  WEEKLY_SCHEDULE.forEach(d=>{
+    html += `<tr><td>${esc(d.day)}</td><td>${esc(d.focus)}</td></tr>`;
+  });
+  html += `</tbody></table>`;
+
+  html += `
+    <div class="section-title">The 4-skill rule</div>
+    <p style="color:#5B5646;margin-top:-4px">Every week, practice all four. Don't become someone who can pass grammar tests but cannot speak German.</p>
+    <div class="skills-row">
+      <div class="skill-pill">🎧 Listening</div>
+      <div class="skill-pill">🗣️ Speaking</div>
+      <div class="skill-pill">📖 Reading</div>
+      <div class="skill-pill">✍️ Writing</div>
+    </div>`;
+
+  document.getElementById("main").innerHTML = html;
+}
+
+// ---------------- RENDER: MILESTONES ----------------
+function renderMilestones(){
+  let html = `
+    <div class="page-head">
+      <h1>Milestones</h1>
+      <p>START → A1 → A2 → B1 → B2 → B2 Exam → C1 (next stage). Progress from broken German to natural German — start speaking from day one.</p>
+    </div>`;
+  MILESTONES.forEach(m=>{
+    const wk = ALL_TASKS.filter(t=>t.weekId<=m.throughWeek || true); // placeholder not used
+    const targetWeek = PHASES.flatMap(p=>p.weeks).find(w=>w.id===m.throughWeek);
+    let hit = true;
+    for(const ph of PHASES){
+      for(const w of ph.weeks){
+        const p = weekProgress(w);
+        if(p.total>0 && p.done<p.total) { hit = false; }
+        if(w.id === m.throughWeek) break;
+      }
+      if(ph.weeks.some(w=>w.id===m.throughWeek)) break;
+    }
+    html += `
+      <div class="milestone">
+        <div class="m-dot ${hit?'hit':''}">${hit?'✓':''}</div>
+        <div class="m-body"><b>${esc(m.month)}</b><p>${esc(m.text)}</p></div>
+      </div>`;
+  });
+  document.getElementById("main").innerHTML = html;
+}
+
+// ---------------- NAV ----------------
+const RENDERERS = {dashboard:renderDashboard, roadmap:renderRoadmap, vocab:renderVocab, schedule:renderSchedule, milestones:renderMilestones};
+
+function setTab(tab){
+  document.querySelectorAll(".nav-item").forEach(el=>{
+    el.classList.toggle("active", el.getAttribute("data-tab")===tab);
+  });
+  RENDERERS[tab]();
+}
+
+document.querySelectorAll(".nav-item").forEach(el=>{
+  el.addEventListener("click", ()=> setTab(el.getAttribute("data-tab")));
+});
+
+// ---------------- INIT ----------------
+loadState().then(()=>{
+  setTab("dashboard");
+}).catch(()=>{
+  document.getElementById("main").innerHTML = '<div class="loading">Couldn\'t load saved progress — starting fresh.</div>';
+  setTab("dashboard");
+});
+
+})();
+</script>
+</body>
+</html>
